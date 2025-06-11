@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'npm install' // Create node_modules to fix error
+                sh 'npm install' // Create node_modules to fix previous error
             }
         }
         stage('Snyk Test') {
@@ -22,9 +22,9 @@ pipeline {
                 snykSecurity(
                     snykInstallation: 'snyk_test', // Snyk CLI installation name
                     snykTokenId: 'snyk-token',    // Credential ID
-                    severity: 'low',              // Use 'severity' instead of 'severityThreshold'
+                    severity: 'low',              // Use 'severity' for compatibility
                     failOnIssues: true,           // Fail build on vulnerabilities
-                    additionalArguments: '--json' // JSON output as per your log
+                    additionalArguments: '--json' // JSON output
                 )
             }
         }
@@ -33,15 +33,17 @@ pipeline {
                 snykSecurity(
                     snykInstallation: 'snyk_test',
                     snykTokenId: 'snyk-token',
-                    monitorProjectOnBuild: true   // Use 'monitorProjectOnBuild' instead of 'monitorProject'
+                    monitorProjectOnBuild: true   // Enable monitoring
                 )
+            }
+        }
+        stage('Archive Reports') {
+            steps {
+                archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true
             }
         }
     }
     post {
-        always {
-            archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true
-        }
         success {
             echo 'Snyk scan completed successfully.'
         }
