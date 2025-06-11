@@ -22,7 +22,7 @@ pipeline {
                 snykSecurity(
                     snykInstallation: 'snyk_test', // Snyk CLI installation name
                     snykTokenId: 'snyk-token',    // Credential ID
-                    severityThreshold: 'low',     // Match your previous log
+                    severity: 'low',              // Use 'severity' instead of 'severityThreshold'
                     failOnIssues: true,           // Fail build on vulnerabilities
                     additionalArguments: '--json' // JSON output as per your log
                 )
@@ -33,7 +33,7 @@ pipeline {
                 snykSecurity(
                     snykInstallation: 'snyk_test',
                     snykTokenId: 'snyk-token',
-                    monitorProject: true          // Enable monitoring
+                    monitorProjectOnBuild: true   // Use 'monitorProjectOnBuild' instead of 'monitorProject'
                 )
             }
         }
